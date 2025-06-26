@@ -2,108 +2,128 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relógio 5 Min</title>
-
-  <!-- Fonte inicial -->
-  <link id="fontLink" href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
-
-
-
+  <title>Relógio 45min</title>
   <style>
-    :root {
-      --currentFont: 'Orbitron';
-    }
-
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: transparent;
-      font-family: var(--currentFont), sans-serif;
-      overflow: hidden;
-    }
-
-    #timer {
+      background-color: #5f1ab0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-size: 10vw;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .circle-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    .circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(white 0%, transparent 0%);
+      transition: background 0.1s linear;
+    }
+
+    .inner {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background-color: #5f1ab0;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       color: white;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+
+    .label {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .time {
+      font-size: 60px;
     }
   </style>
 </head>
 <body>
-  <div id="timer">05:00</div>
+  <div class="circle-container">
+    <div class="circle" id="progressCircle"></div>
+    <div class="inner">
+      <div class="label" id="labelText">POMODORO</div>
+      <div class="time" id="timeDisplay">45:00</div>
+    </div>
+  </div>
 
   <script>
-    let duration = 2700; // 45 minutos
-    let remaining = duration;
-    let interval;
-    let paused = false;
+    let totalSeconds = 2700; // 45 minutos
+    let remainingSeconds = totalSeconds;
+    let interval = null;
 
-    function formatTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-
-      const mm = String(m).padStart(2, '0');
-      const ss = String(s).padStart(2, '0');
-
-      if (h > 0) {
-        const hh = String(h).padStart(2, '0');
-        return `${hh}:${mm}:${ss}`;
-      } else {
-        return `${mm}:${ss}`;
-      }
-    }
+    const timeDisplay = document.getElementById("timeDisplay");
+    const progressCircle = document.getElementById("progressCircle");
+    const labelText = document.getElementById("labelText");
+    const channel = new BroadcastChannel("timer-45min");
 
     function updateDisplay() {
-      document.getElementById('timer').textContent = formatTime(remaining);
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      const percentage = (remainingSeconds / totalSeconds) * 100;
+      progressCircle.style.background = `conic-gradient(white ${percentage}%, transparent 0%)`;
     }
 
-    function startCountdown() {
-      clearInterval(interval);
+    function startTimer() {
+      if (interval) return;
       interval = setInterval(() => {
-        if (!paused && remaining > 0) {
-          remaining--;
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
           updateDisplay();
-        } else if (remaining <= 0) {
+        } else {
           clearInterval(interval);
+          interval = null;
         }
       }, 1000);
     }
 
-    function resetCountdown(newDuration) {
+    function pauseTimer() {
       clearInterval(interval);
-      duration = newDuration;
-      remaining = duration;
-      paused = false;
+      interval = null;
+    }
+
+    function resetTimer(value) {
+      totalSeconds = value;
+      remainingSeconds = value;
+      clearInterval(interval);
+      interval = null;
       updateDisplay();
     }
 
-    function togglePause() {
-      paused = !paused;
+    function changeFont(fontName) {
+      document.body.style.fontFamily = `'${fontName}', sans-serif`;
     }
 
-    const channel = new BroadcastChannel('timer-45min'); // MUDAR CANAL
+    function changeLabel(text) {
+      labelText.textContent = text || '';
+    }
 
+    // Receber mensagens do painel
     channel.onmessage = (event) => {
       const { command, value } = event.data;
-      if (command === 'start') {
-        paused = false;
-        startCountdown();
-      } else if (command === 'pause') {
-        togglePause();
-      } else if (command === 'reset') {
-        resetCountdown(value);
-      } else if (command === 'font') {
-        const fontName = value.replace(/ /g, '+');
-        const link = document.getElementById('fontLink');
-        link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
-        document.documentElement.style.setProperty('--currentFont', `'${value}'`);
-      }
+      if (command === "start") startTimer();
+      if (command === "pause") pauseTimer();
+      if (command === "reset") resetTimer(value);
+      if (command === "font") changeFont(value);
+      if (command === "label") changeLabel(value);
     };
 
     updateDisplay();
