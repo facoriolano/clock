@@ -84,7 +84,8 @@
       paused = !paused;
     }
 
-    const channel = new BroadcastChannel('timer-control');
+    // ✅ Canal correto para esse relógio:
+    const channel = new BroadcastChannel('timer-5min');
 
     channel.onmessage = (event) => {
       const { command, value } = event.data;
