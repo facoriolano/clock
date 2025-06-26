@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relógio 5 Min</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+    #timer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-size: 10vw;
+      color: white;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">00:05:00</div>
+
+  <script>
+    let duration = 300; // default 5 min
+    let remaining = duration;
+    let interval;
+
+    function formatTime(seconds) {
+      const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function updateDisplay() {
+      document.getElementById('timer').textContent = formatTime(remaining);
+    }
+
+    function startCountdown() {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        if (remaining > 0) {
+          remaining--;
+          updateDisplay();
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+
+    function resetCountdown(newDuration) {
+      clearInterval(interval);
+      duration = newDuration;
+      remaining = duration;
+      updateDisplay();
+    }
+
+    const channel = new BroadcastChannel('timer-control');
+
+    channel.onmessage = (event) => {
+      const { command, value } = event.data;
+      if (command === 'start') {
+        startCountdown();
+      } else if (command === 'reset') {
+        resetCountdown(value);
+      }
+    };
+
+    updateDisplay();
+  </script>
+</body>
+</html>
