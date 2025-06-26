@@ -36,7 +36,7 @@
   <div id="timer">05:00</div>
 
   <script>
-    let duration = 300;
+    let duration = 2700;
     let remaining = duration;
     let interval;
     let paused = false;
@@ -84,7 +84,8 @@
       paused = !paused;
     }
 
-    const channel = new BroadcastChannel('timer-control');
+    // ✅ Canal correto para esse relógio:
+    const channel = new BroadcastChannel('timer-45min');
 
     channel.onmessage = (event) => {
       const { command, value } = event.data;
