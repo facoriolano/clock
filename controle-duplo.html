@@ -67,13 +67,21 @@
       font-size: 18px;
     }
 
-    select {
+    select, input[type="text"] {
       padding: 6px;
       font-size: 16px;
       border-radius: 5px;
       background-color: #3c245e;
       color: white;
       border: none;
+    }
+
+    input[type="text"] {
+      width: 200px;
+    }
+
+    .input-row {
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -111,6 +119,11 @@
         <option value="Anton">Anton</option>
         <option value="Oswald">Oswald</option>
       </select>
+    </div>
+    <div class="input-row">
+      <label for="labelInput">Frase:</label>
+      <input type="text" id="labelInput" placeholder="Ex: POMODORO" />
+      <button onclick="enviarLabel()">Enviar</button>
     </div>
     <div class="button-group">
       <button id="playBtn5" onclick="togglePlay('5')">Play</button>
@@ -226,6 +239,11 @@
     function changeFont(id, selectEl) {
       const font = selectEl.value;
       channels[id].postMessage({ command: 'font', value: font });
+    }
+
+    function enviarLabel() {
+      const texto = document.getElementById('labelInput').value;
+      channels['5'].postMessage({ command: 'label', value: texto });
     }
 
     updateUI('5');
