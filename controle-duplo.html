@@ -2,252 +2,165 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Painel de Controle Duplo</title>
+  <title>Painel de Controle</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #1c132b;
+      background-color: #1c1132;
       color: white;
-      padding: 20px;
+      font-family: sans-serif;
       display: flex;
-      flex-direction: column;
       gap: 40px;
+      padding: 20px;
     }
 
-    .relógio {
-      border: 2px solid #555;
-      border-radius: 10px;
+    .painel {
+      border: 1px solid #444;
       padding: 20px;
-      background-color: #271e3c;
+      border-radius: 10px;
+      background-color: #2d1a4f;
+      width: 250px;
     }
 
     h2 {
-      margin-bottom: 10px;
+      margin-top: 0;
     }
 
-    .section {
-      margin-bottom: 20px;
-    }
-
-    .row {
-      display: flex;
-      align-items: center;
-      margin: 5px 0;
-    }
-
-    .label {
-      width: 80px;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
+    label {
+      display: block;
       margin-top: 10px;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
     }
 
     button {
-      padding: 6px 14px;
+      margin-top: 10px;
+      padding: 5px 10px;
       font-size: 16px;
-      border-radius: 5px;
       border: none;
-      background-color: #3c245e;
+      border-radius: 5px;
+      background-color: #7e5bef;
       color: white;
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    button:hover {
-      background-color: #5c2d90;
-    }
-
-    .value {
-      width: 40px;
-      text-align: center;
-      font-size: 18px;
-    }
-
-    select, input[type="text"] {
-      padding: 6px;
-      font-size: 16px;
-      border-radius: 5px;
-      background-color: #3c245e;
-      color: white;
-      border: none;
-    }
-
-    input[type="text"] {
-      width: 200px;
-    }
-
-    .input-row {
-      margin-top: 10px;
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
-
-  <!-- Bloco do Relógio de 5 Minutos -->
-  <div class="relógio" id="bloco5">
+  <!-- Painel para relógio de 5 minutos -->
+  <div class="painel">
     <h2>Relógio de 5 Minutos</h2>
-    <div class="section">
-      <div class="row">
-        <span class="label">Horas</span>
-        <button onclick="change('5', 'hours', -1)">−</button>
-        <span class="value" id="hours5">0</span>
-        <button onclick="change('5', 'hours', 1)">+</button>
-      </div>
-      <div class="row">
-        <span class="label">Minutos</span>
-        <button onclick="change('5', 'minutes', -1)">−</button>
-        <span class="value" id="minutes5">5</span>
-        <button onclick="change('5', 'minutes', 1)">+</button>
-      </div>
-      <div class="row">
-        <span class="label">Segundos</span>
-        <button onclick="change('5', 'seconds', -1)">−</button>
-        <span class="value" id="seconds5">0</span>
-        <button onclick="change('5', 'seconds', 1)">+</button>
-      </div>
-    </div>
-    <div class="row">
-      <span class="label">Fonte</span>
-      <select onchange="changeFont('5', this)">
+    <label>Horas: <input type="number" id="h5" min="0" value="0" /></label>
+    <label>Minutos: <input type="number" id="m5" min="0" value="5" /></label>
+    <label>Segundos: <input type="number" id="s5" min="0" value="0" /></label>
+
+    <label>Fonte:
+      <select id="font5">
         <option value="Orbitron">Orbitron</option>
-        <option value="Roboto Mono">Roboto Mono</option>
-        <option value="Bebas Neue">Bebas Neue</option>
-        <option value="Anton">Anton</option>
-        <option value="Oswald">Oswald</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
       </select>
-    </div>
-    <div class="input-row">
-      <label for="labelInput">Frase:</label>
-      <input type="text" id="labelInput" placeholder="Ex: POMODORO" />
-      <button onclick="enviarLabel()">Enviar</button>
-    </div>
-    <div class="button-group">
-      <button id="playBtn5" onclick="togglePlay('5')">Play</button>
-      <button onclick="reset('5')">Reset</button>
+    </label>
+
+    <label>Frase: <input type="text" id="label5" placeholder="Ex: POMODORO" /></label>
+    <button onclick="enviar5()">Enviar</button>
+
+    <div class="btn-row">
+      <button onclick="start5()">Play</button>
+      <button onclick="pause5()">Pause</button>
+      <button onclick="reset5()">Reset</button>
     </div>
   </div>
 
-  <!-- Bloco do Relógio de 45 Minutos -->
-  <div class="relógio" id="bloco45">
+  <!-- Painel para relógio de 45 minutos -->
+  <div class="painel">
     <h2>Relógio de 45 Minutos</h2>
-    <div class="section">
-      <div class="row">
-        <span class="label">Horas</span>
-        <button onclick="change('45', 'hours', -1)">−</button>
-        <span class="value" id="hours45">0</span>
-        <button onclick="change('45', 'hours', 1)">+</button>
-      </div>
-      <div class="row">
-        <span class="label">Minutos</span>
-        <button onclick="change('45', 'minutes', -1)">−</button>
-        <span class="value" id="minutes45">45</span>
-        <button onclick="change('45', 'minutes', 1)">+</button>
-      </div>
-      <div class="row">
-        <span class="label">Segundos</span>
-        <button onclick="change('45', 'seconds', -1)">−</button>
-        <span class="value" id="seconds45">0</span>
-        <button onclick="change('45', 'seconds', 1)">+</button>
-      </div>
-    </div>
-    <div class="row">
-      <span class="label">Fonte</span>
-      <select onchange="changeFont('45', this)">
+    <label>Horas: <input type="number" id="h45" min="0" value="0" /></label>
+    <label>Minutos: <input type="number" id="m45" min="0" value="45" /></label>
+    <label>Segundos: <input type="number" id="s45" min="0" value="0" /></label>
+
+    <label>Fonte:
+      <select id="font45">
         <option value="Orbitron">Orbitron</option>
-        <option value="Roboto Mono">Roboto Mono</option>
-        <option value="Bebas Neue">Bebas Neue</option>
-        <option value="Anton">Anton</option>
-        <option value="Oswald">Oswald</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
       </select>
-    </div>
-    <div class="button-group">
-      <button id="playBtn45" onclick="togglePlay('45')">Play</button>
-      <button onclick="reset('45')">Reset</button>
+    </label>
+
+    <label>Frase: <input type="text" id="label45" placeholder="Ex: MENSAGEM" /></label>
+    <button onclick="enviar45()">Enviar</button>
+
+    <div class="btn-row">
+      <button onclick="start45()">Play</button>
+      <button onclick="pause45()">Pause</button>
+      <button onclick="reset45()">Reset</button>
     </div>
   </div>
 
   <script>
-    const channels = {
-      '5': new BroadcastChannel('timer-5min'),
-      '45': new BroadcastChannel('timer-45min')
-    };
+    const ch5 = new BroadcastChannel("timer-5min");
+    const ch45 = new BroadcastChannel("timer-45min");
 
-    const state = {
-      '5': {
-        hours: 0,
-        minutes: 5,
-        seconds: 0,
-        isRunning: false,
-        wasNeverStarted: true,
-      },
-      '45': {
-        hours: 0,
-        minutes: 45,
-        seconds: 0,
-        isRunning: false,
-        wasNeverStarted: true,
-      }
-    };
-
-    function updateUI(id) {
-      document.getElementById('hours' + id).textContent = state[id].hours;
-      document.getElementById('minutes' + id).textContent = state[id].minutes;
-      document.getElementById('seconds' + id).textContent = state[id].seconds;
+    function start5() {
+      ch5.postMessage({ command: "start" });
     }
 
-    function change(id, unit, delta) {
-      state[id][unit] += delta;
-      if (state[id][unit] < 0) state[id][unit] = 0;
-      updateUI(id);
+    function pause5() {
+      ch5.postMessage({ command: "pause" });
     }
 
-    function getTotalSeconds(id) {
-      return state[id].hours * 3600 + state[id].minutes * 60 + state[id].seconds;
+    function reset5() {
+      const h = parseInt(document.getElementById("h5").value) || 0;
+      const m = parseInt(document.getElementById("m5").value) || 0;
+      const s = parseInt(document.getElementById("s5").value) || 0;
+      const total = h * 3600 + m * 60 + s;
+      ch5.postMessage({ command: "reset", value: total });
     }
 
-    function togglePlay(id) {
-      const btn = document.getElementById('playBtn' + id);
-      const channel = channels[id];
-
-      if (!state[id].isRunning) {
-        if (state[id].wasNeverStarted) {
-          channel.postMessage({ command: 'reset', value: getTotalSeconds(id) });
-          state[id].wasNeverStarted = false;
-        }
-        channel.postMessage({ command: 'start' });
-        btn.textContent = 'Pausar';
-        state[id].isRunning = true;
-      } else {
-        channel.postMessage({ command: 'pause' });
-        btn.textContent = 'Play';
-        state[id].isRunning = false;
-      }
+    function enviar5() {
+      const font = document.getElementById("font5").value;
+      const label = document.getElementById("label5").value;
+      ch5.postMessage({ command: "font", value: font });
+      ch5.postMessage({ command: "label", value: label });
+      reset5();
     }
 
-    function reset(id) {
-      const channel = channels[id];
-      channel.postMessage({ command: 'reset', value: getTotalSeconds(id) });
-      state[id].isRunning = false;
-      state[id].wasNeverStarted = true;
-      document.getElementById('playBtn' + id).textContent = 'Play';
+    function start45() {
+      ch45.postMessage({ command: "start" });
     }
 
-    function changeFont(id, selectEl) {
-      const font = selectEl.value;
-      channels[id].postMessage({ command: 'font', value: font });
+    function pause45() {
+      ch45.postMessage({ command: "pause" });
     }
 
-    function enviarLabel() {
-      const texto = document.getElementById('labelInput').value;
-      channels['5'].postMessage({ command: 'label', value: texto });
+    function reset45() {
+      const h = parseInt(document.getElementById("h45").value) || 0;
+      const m = parseInt(document.getElementById("m45").value) || 0;
+      const s = parseInt(document.getElementById("s45").value) || 0;
+      const total = h * 3600 + m * 60 + s;
+      ch45.postMessage({ command: "reset", value: total });
     }
 
-    updateUI('5');
-    updateUI('45');
+    function enviar45() {
+      const font = document.getElementById("font45").value;
+      const label = document.getElementById("label45").value;
+      ch45.postMessage({ command: "font", value: font });
+      ch45.postMessage({ command: "label", value: label });
+      reset45();
+    }
   </script>
 </body>
 </html>
