@@ -2,13 +2,11 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Pomodoro</title>
+  <title>Relógio 5min</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
-
     body {
       margin: 0;
-      background-color: #7300cc;
+      background-color: #5f1ab0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -16,94 +14,114 @@
       font-family: 'Orbitron', sans-serif;
     }
 
-    .timer-container {
+    .circle-container {
       position: relative;
       width: 300px;
       height: 300px;
     }
 
-    svg {
-      transform: rotate(-90deg);
-    }
-
-    .circle-bg {
-      fill: none;
-      stroke: #aaa;
-      stroke-width: 10;
-    }
-
-    .circle-progress {
-      fill: none;
-      stroke: white;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1s linear;
-    }
-
-    .timer-text {
+    .circle {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(white 0%, transparent 0%);
+      transition: background 0.1s linear;
+    }
+
+    .inner {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background-color: #5f1ab0;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       color: white;
       text-align: center;
     }
 
     .label {
-      font-size: 18px;
-      margin-bottom: 5px;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
 
     .time {
-      font-size: 48px;
+      font-size: 60px;
     }
   </style>
 </head>
 <body>
-  <div class="timer-container">
-    <svg width="300" height="300">
-      <circle class="circle-bg" cx="150" cy="150" r="130" />
-      <circle class="circle-progress" cx="150" cy="150" r="130" />
-    </svg>
-    <div class="timer-text">
-      <div class="label" id="label">POMODORO</div>
-      <div class="time" id="time">5:00</div>
+  <div class="circle-container">
+    <div class="circle" id="progressCircle"></div>
+    <div class="inner">
+      <div class="label">POMODORO</div>
+      <div class="time" id="timeDisplay">5:00</div>
     </div>
   </div>
 
   <script>
-    const FULL_DASH_ARRAY = 2 * Math.PI * 130;
-    const circle = document.querySelector('.circle-progress');
-    circle.style.strokeDasharray = FULL_DASH_ARRAY;
-    circle.style.strokeDashoffset = 0;
+    let totalSeconds = 300;
+    let remainingSeconds = totalSeconds;
+    let interval = null;
 
-    const timeDisplay = document.getElementById('time');
+    const timeDisplay = document.getElementById("timeDisplay");
+    const progressCircle = document.getElementById("progressCircle");
+    const channel = new BroadcastChannel("timer-5min");
 
-    let totalSeconds = 5 * 60;
-    let remaining = totalSeconds;
-
-    function updateTimer() {
-      const min = Math.floor(remaining / 60);
-      const sec = remaining % 60;
-      timeDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
-      const offset = FULL_DASH_ARRAY * (1 - remaining / totalSeconds);
-      circle.style.strokeDashoffset = offset;
+    function updateDisplay() {
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      const percentage = (remainingSeconds / totalSeconds) * 100;
+      progressCircle.style.background = `conic-gradient(white ${percentage}%, transparent 0%)`;
     }
 
     function startTimer() {
-      updateTimer();
-      const interval = setInterval(() => {
-        remaining--;
-        updateTimer();
-        if (remaining <= 0) {
+      if (interval) return;
+      interval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateDisplay();
+        } else {
           clearInterval(interval);
-          circle.style.strokeDashoffset = FULL_DASH_ARRAY;
+          interval = null;
         }
       }, 1000);
     }
 
-    // Inicia automaticamente (ou substitua por evento de controle)
-    startTimer();
+    function pauseTimer() {
+      clearInterval(interval);
+      interval = null;
+    }
+
+    function resetTimer(value) {
+      totalSeconds = value;
+      remainingSeconds = value;
+      clearInterval(interval);
+      interval = null;
+      updateDisplay();
+    }
+
+    function changeFont(fontName) {
+      document.body.style.fontFamily = `'${fontName}', sans-serif`;
+    }
+
+    // Listen to control panel messages
+    channel.onmessage = (event) => {
+      const { command, value } = event.data;
+      if (command === "start") startTimer();
+      if (command === "pause") pauseTimer();
+      if (command === "reset") resetTimer(value);
+      if (command === "font") changeFont(value);
+    };
+
+    // Initial display
+    updateDisplay();
   </script>
 </body>
 </html>
