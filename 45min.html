@@ -85,7 +85,7 @@
       paused = !paused;
     }
 
-    const channel = new BroadcastChannel('timer-5min');
+    const channel = new BroadcastChannel('timer-45min'); // MUDAR CANAL
 
     channel.onmessage = (event) => {
       const { command, value } = event.data;
