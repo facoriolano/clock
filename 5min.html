@@ -2,109 +2,108 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relógio 5 Min</title>
-
-  <!-- Fonte inicial -->
-  <link id="fontLink" href="<https://fonts.googleapis.com/css2?family=Orbitron&display=swap>" rel="stylesheet">
-
+  <title>Pomodoro</title>
   <style>
-    :root {
-      --currentFont: 'Orbitron';
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: transparent;
-      font-family: var(--currentFont), sans-serif;
-      overflow: hidden;
-    }
-
-    #timer {
+      background-color: #7300cc;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-size: 10vw;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .timer-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    svg {
+      transform: rotate(-90deg);
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #aaa;
+      stroke-width: 10;
+    }
+
+    .circle-progress {
+      fill: none;
+      stroke: white;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       color: white;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+
+    .label {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .time {
+      font-size: 48px;
     }
   </style>
 </head>
 <body>
-  <div id="timer">05:00</div>
+  <div class="timer-container">
+    <svg width="300" height="300">
+      <circle class="circle-bg" cx="150" cy="150" r="130" />
+      <circle class="circle-progress" cx="150" cy="150" r="130" />
+    </svg>
+    <div class="timer-text">
+      <div class="label" id="label">POMODORO</div>
+      <div class="time" id="time">5:00</div>
+    </div>
+  </div>
 
   <script>
-    let duration = 300; // 5 minutos
-    let remaining = duration;
-    let interval;
-    let paused = false;
+    const FULL_DASH_ARRAY = 2 * Math.PI * 130;
+    const circle = document.querySelector('.circle-progress');
+    circle.style.strokeDasharray = FULL_DASH_ARRAY;
+    circle.style.strokeDashoffset = 0;
 
-    function formatTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
+    const timeDisplay = document.getElementById('time');
 
-      const mm = String(m).padStart(2, '0');
-      const ss = String(s).padStart(2, '0');
+    let totalSeconds = 5 * 60;
+    let remaining = totalSeconds;
 
-      if (h > 0) {
-        const hh = String(h).padStart(2, '0');
-        return `${hh}:${mm}:${ss}`;
-      } else {
-        return `${mm}:${ss}`;
-      }
+    function updateTimer() {
+      const min = Math.floor(remaining / 60);
+      const sec = remaining % 60;
+      timeDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+      const offset = FULL_DASH_ARRAY * (1 - remaining / totalSeconds);
+      circle.style.strokeDashoffset = offset;
     }
 
-    function updateDisplay() {
-      document.getElementById('timer').textContent = formatTime(remaining);
-    }
-
-    function startCountdown() {
-      clearInterval(interval);
-      interval = setInterval(() => {
-        if (!paused && remaining > 0) {
-          remaining--;
-          updateDisplay();
-        } else if (remaining <= 0) {
+    function startTimer() {
+      updateTimer();
+      const interval = setInterval(() => {
+        remaining--;
+        updateTimer();
+        if (remaining <= 0) {
           clearInterval(interval);
+          circle.style.strokeDashoffset = FULL_DASH_ARRAY;
         }
       }, 1000);
     }
 
-    function resetCountdown(newDuration) {
-      clearInterval(interval);
-      duration = newDuration;
-      remaining = duration;
-      paused = false;
-      updateDisplay();
-    }
-
-    function togglePause() {
-      paused = !paused;
-    }
-
-    const channel = new BroadcastChannel('timer-5min'); // MUDAR CANAL
-
-    channel.onmessage = (event) => {
-      const { command, value } = event.data;
-      if (command === 'start') {
-        paused = false;
-        startCountdown();
-      } else if (command === 'pause') {
-        togglePause();
-      } else if (command === 'reset') {
-        resetCountdown(value);
-      } else if (command === 'font') {
-        const fontName = value.replace(/ /g, '+');
-        const link = document.getElementById('fontLink');
-        link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
-        document.documentElement.style.setProperty('--currentFont', `'${value}'`);
-      }
-    };
-
-    updateDisplay();
+    // Inicia automaticamente (ou substitua por evento de controle)
+    startTimer();
   </script>
 </body>
 </html>
