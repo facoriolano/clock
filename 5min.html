@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Relógio 5 Min</title>
+
+  <!-- Fonte inicial -->
+  <link id="fontLink" href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --currentFont: 'Orbitron';
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       background: transparent;
-      font-family: 'Arial', sans-serif;
+      font-family: var(--currentFont), sans-serif;
       overflow: hidden;
     }
 
@@ -25,18 +33,28 @@
   </style>
 </head>
 <body>
-  <div id="timer">00:05:00</div>
+  <div id="timer">05:00</div>
 
   <script>
-    let duration = 300; // default 5 min
+    let duration = 300;
     let remaining = duration;
     let interval;
+    let paused = false;
 
     function formatTime(seconds) {
-      const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      return `${h}:${m}:${s}`;
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+
+      const mm = String(m).padStart(2, '0');
+      const ss = String(s).padStart(2, '0');
+
+      if (h > 0) {
+        const hh = String(h).padStart(2, '0');
+        return `${hh}:${mm}:${ss}`;
+      } else {
+        return `${mm}:${ss}`;
+      }
     }
 
     function updateDisplay() {
@@ -46,10 +64,10 @@
     function startCountdown() {
       clearInterval(interval);
       interval = setInterval(() => {
-        if (remaining > 0) {
+        if (!paused && remaining > 0) {
           remaining--;
           updateDisplay();
-        } else {
+        } else if (remaining <= 0) {
           clearInterval(interval);
         }
       }, 1000);
@@ -62,14 +80,26 @@
       updateDisplay();
     }
 
+    function togglePause() {
+      paused = !paused;
+    }
+
     const channel = new BroadcastChannel('timer-control');
 
     channel.onmessage = (event) => {
       const { command, value } = event.data;
       if (command === 'start') {
+        paused = false;
         startCountdown();
+      } else if (command === 'pause') {
+        togglePause();
       } else if (command === 'reset') {
         resetCountdown(value);
+      } else if (command === 'font') {
+        const fontName = value.replace(/ /g, '+');
+        const link = document.getElementById('fontLink');
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
+        document.documentElement.style.setProperty('--currentFont', `'${value}'`);
       }
     };
 
