@@ -84,6 +84,12 @@
     <h2>Relógio de 5 Minutos</h2>
     <div class="section">
       <div class="row">
+        <span class="label">Horas</span>
+        <button onclick="change('5', 'hours', -1)">−</button>
+        <span class="value" id="hours5">0</span>
+        <button onclick="change('5', 'hours', 1)">+</button>
+      </div>
+      <div class="row">
         <span class="label">Minutos</span>
         <button onclick="change('5', 'minutes', -1)">−</button>
         <span class="value" id="minutes5">5</span>
@@ -116,6 +122,12 @@
   <div class="relógio" id="bloco45">
     <h2>Relógio de 45 Minutos</h2>
     <div class="section">
+      <div class="row">
+        <span class="label">Horas</span>
+        <button onclick="change('45', 'hours', -1)">−</button>
+        <span class="value" id="hours45">0</span>
+        <button onclick="change('45', 'hours', 1)">+</button>
+      </div>
       <div class="row">
         <span class="label">Minutos</span>
         <button onclick="change('45', 'minutes', -1)">−</button>
@@ -153,12 +165,14 @@
 
     const state = {
       '5': {
+        hours: 0,
         minutes: 5,
         seconds: 0,
         isRunning: false,
         wasNeverStarted: true,
       },
       '45': {
+        hours: 0,
         minutes: 45,
         seconds: 0,
         isRunning: false,
@@ -167,6 +181,7 @@
     };
 
     function updateUI(id) {
+      document.getElementById('hours' + id).textContent = state[id].hours;
       document.getElementById('minutes' + id).textContent = state[id].minutes;
       document.getElementById('seconds' + id).textContent = state[id].seconds;
     }
@@ -178,7 +193,7 @@
     }
 
     function getTotalSeconds(id) {
-      return state[id].minutes * 60 + state[id].seconds;
+      return state[id].hours * 3600 + state[id].minutes * 60 + state[id].seconds;
     }
 
     function togglePlay(id) {
