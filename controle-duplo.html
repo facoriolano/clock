@@ -6,104 +6,125 @@
   <style>
     body {
       background-color: #1c1132;
-      color: white;
-      font-family: sans-serif;
+      color: #ccc;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       gap: 40px;
-      padding: 20px;
+      padding: 30px;
     }
 
     .painel {
-      border: 1px solid #444;
+      background: #201436;
+      border-radius: 12px;
       padding: 20px;
-      border-radius: 10px;
-      background-color: #2d1a4f;
-      width: 250px;
+      width: 260px;
+      box-shadow: 0 0 10px #00000050;
     }
 
     h2 {
       margin-top: 0;
+      color: white;
+      font-size: 18px;
+      text-align: center;
     }
 
     label {
       display: block;
-      margin-top: 10px;
+      margin: 15px 0 5px;
+      font-size: 14px;
     }
 
     input[type="number"],
     input[type="text"],
     select {
       width: 100%;
-      padding: 5px;
-      margin-top: 5px;
-      border-radius: 5px;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 8px;
       border: none;
-      font-size: 16px;
+      background-color: #2a1b4a;
+      color: #eee;
+    }
+
+    input[type="text"]::placeholder {
+      color: #777;
     }
 
     button {
-      margin-top: 10px;
-      padding: 5px 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: #7e5bef;
-      color: white;
+      padding: 8px 16px;
+      margin-top: 12px;
+      font-size: 14px;
+      border: 1px solid #7e5bef;
+      border-radius: 20px;
+      background-color: transparent;
+      color: #ccc;
       cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #7e5bef33;
     }
 
     .btn-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
-  <!-- Painel para relógio de 5 minutos -->
+  <!-- Painel de 5 Minutos -->
   <div class="painel">
     <h2>Relógio de 5 Minutos</h2>
-    <label>Horas: <input type="number" id="h5" min="0" value="0" /></label>
-    <label>Minutos: <input type="number" id="m5" min="0" value="5" /></label>
-    <label>Segundos: <input type="number" id="s5" min="0" value="0" /></label>
+    <label>Horas</label>
+    <input type="number" id="h5" min="0" value="0" />
+    <label>Minutos</label>
+    <input type="number" id="m5" min="0" value="5" />
+    <label>Segundos</label>
+    <input type="number" id="s5" min="0" value="0" />
 
-    <label>Fonte:
-      <select id="font5">
-        <option value="Orbitron">Orbitron</option>
-        <option value="Arial">Arial</option>
-        <option value="Courier New">Courier New</option>
-      </select>
-    </label>
+    <label>Fonte</label>
+    <select id="font5">
+      <option value="Orbitron">Orbitron</option>
+      <option value="Arial">Arial</option>
+      <option value="Courier New">Courier New</option>
+    </select>
 
-    <label>Frase: <input type="text" id="label5" placeholder="Ex: POMODORO" /></label>
-    <button onclick="enviar5()">Enviar</button>
+    <label>Frase</label>
+    <input type="text" id="label5" placeholder="Ex: POMODORO" />
 
     <div class="btn-row">
+      <button onclick="enviar5()">Enviar</button>
       <button onclick="start5()">Play</button>
       <button onclick="pause5()">Pause</button>
       <button onclick="reset5()">Reset</button>
     </div>
   </div>
 
-  <!-- Painel para relógio de 45 minutos -->
+  <!-- Painel de 45 Minutos -->
   <div class="painel">
     <h2>Relógio de 45 Minutos</h2>
-    <label>Horas: <input type="number" id="h45" min="0" value="0" /></label>
-    <label>Minutos: <input type="number" id="m45" min="0" value="45" /></label>
-    <label>Segundos: <input type="number" id="s45" min="0" value="0" /></label>
+    <label>Horas</label>
+    <input type="number" id="h45" min="0" value="0" />
+    <label>Minutos</label>
+    <input type="number" id="m45" min="0" value="45" />
+    <label>Segundos</label>
+    <input type="number" id="s45" min="0" value="0" />
 
-    <label>Fonte:
-      <select id="font45">
-        <option value="Orbitron">Orbitron</option>
-        <option value="Arial">Arial</option>
-        <option value="Courier New">Courier New</option>
-      </select>
-    </label>
+    <label>Fonte</label>
+    <select id="font45">
+      <option value="Orbitron">Orbitron</option>
+      <option value="Arial">Arial</option>
+      <option value="Courier New">Courier New</option>
+    </select>
 
-    <label>Frase: <input type="text" id="label45" placeholder="Ex: MENSAGEM" /></label>
-    <button onclick="enviar45()">Enviar</button>
+    <label>Frase</label>
+    <input type="text" id="label45" placeholder="Ex: INTERVALO" />
 
     <div class="btn-row">
+      <button onclick="enviar45()">Enviar</button>
       <button onclick="start45()">Play</button>
       <button onclick="pause45()">Pause</button>
       <button onclick="reset45()">Reset</button>
