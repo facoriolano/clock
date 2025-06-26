@@ -8,9 +8,37 @@
       background-color: #151021;
       color: #ccc;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      gap: 40px;
       padding: 30px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .toggle-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid #5c3d80;
+      background-color: #2a1e44;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .toggle-button.active {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
     }
 
     .painel {
@@ -19,6 +47,11 @@
       padding: 20px;
       width: 260px;
       box-shadow: 0 0 8px #00000040;
+      display: none;
+    }
+
+    .painel.active {
+      display: block;
     }
 
     h2 {
@@ -103,89 +136,85 @@
   </style>
 </head>
 <body>
-  <!-- Painel de 5 Minutos -->
-  <div class="painel">
-    <h2>Relógio de 5 Minutos</h2>
-
-    <label>Horas</label>
-    <div class="input-group">
-      <button onclick="adjust('h5', -1)">−</button>
-      <input type="number" id="h5" min="0" value="0" />
-      <button onclick="adjust('h5', 1)">+</button>
-    </div>
-
-    <label>Minutos</label>
-    <div class="input-group">
-      <button onclick="adjust('m5', -1)">−</button>
-      <input type="number" id="m5" min="0" value="5" />
-      <button onclick="adjust('m5', 1)">+</button>
-    </div>
-
-    <label>Segundos</label>
-    <div class="input-group">
-      <button onclick="adjust('s5', -1)">−</button>
-      <input type="number" id="s5" min="0" value="0" />
-      <button onclick="adjust('s5', 1)">+</button>
-    </div>
-
-    <label>Fonte</label>
-    <select id="font5">
-      <option value="Orbitron">Orbitron</option>
-      <option value="Arial">Arial</option>
-      <option value="Courier New">Courier New</option>
-    </select>
-
-    <label>Frase</label>
-    <input type="text" id="label5" placeholder="Ex: POMODORO" />
-
-    <div class="btn-row">
-      <button onclick="enviar5()">Enviar</button>
-      <button onclick="start5()">Play</button>
-      <button onclick="pause5()">Pause</button>
-      <button onclick="reset5()">Reset</button>
-    </div>
+  <!-- Botões de Alternância -->
+  <div class="toggle-buttons">
+    <button class="toggle-button active" onclick="mostrarPainel(1)">1</button>
+    <button class="toggle-button" onclick="mostrarPainel(2)">2</button>
   </div>
 
-  <!-- Painel de 45 Minutos -->
-  <div class="painel">
-    <h2>Relógio de 45 Minutos</h2>
-
-    <label>Horas</label>
-    <div class="input-group">
-      <button onclick="adjust('h45', -1)">−</button>
-      <input type="number" id="h45" min="0" value="0" />
-      <button onclick="adjust('h45', 1)">+</button>
+  <div class="container">
+    <!-- Painel de 5 Minutos -->
+    <div class="painel active" id="painel1">
+      <h2>Relógio de 5 Minutos</h2>
+      <label>Horas</label>
+      <div class="input-group">
+        <button onclick="adjust('h5', -1)">−</button>
+        <input type="number" id="h5" min="0" value="0" />
+        <button onclick="adjust('h5', 1)">+</button>
+      </div>
+      <label>Minutos</label>
+      <div class="input-group">
+        <button onclick="adjust('m5', -1)">−</button>
+        <input type="number" id="m5" min="0" value="5" />
+        <button onclick="adjust('m5', 1)">+</button>
+      </div>
+      <label>Segundos</label>
+      <div class="input-group">
+        <button onclick="adjust('s5', -1)">−</button>
+        <input type="number" id="s5" min="0" value="0" />
+        <button onclick="adjust('s5', 1)">+</button>
+      </div>
+      <label>Fonte</label>
+      <select id="font5">
+        <option value="Orbitron">Orbitron</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+      </select>
+      <label>Frase</label>
+      <input type="text" id="label5" placeholder="Ex: POMODORO" />
+      <div class="btn-row">
+        <button onclick="enviar5()">Enviar</button>
+        <button onclick="start5()">Play</button>
+        <button onclick="pause5()">Pause</button>
+        <button onclick="reset5()">Reset</button>
+      </div>
     </div>
 
-    <label>Minutos</label>
-    <div class="input-group">
-      <button onclick="adjust('m45', -1)">−</button>
-      <input type="number" id="m45" min="0" value="45" />
-      <button onclick="adjust('m45', 1)">+</button>
-    </div>
-
-    <label>Segundos</label>
-    <div class="input-group">
-      <button onclick="adjust('s45', -1)">−</button>
-      <input type="number" id="s45" min="0" value="0" />
-      <button onclick="adjust('s45', 1)">+</button>
-    </div>
-
-    <label>Fonte</label>
-    <select id="font45">
-      <option value="Orbitron">Orbitron</option>
-      <option value="Arial">Arial</option>
-      <option value="Courier New">Courier New</option>
-    </select>
-
-    <label>Frase</label>
-    <input type="text" id="label45" placeholder="Ex: INTERVALO" />
-
-    <div class="btn-row">
-      <button onclick="enviar45()">Enviar</button>
-      <button onclick="start45()">Play</button>
-      <button onclick="pause45()">Pause</button>
-      <button onclick="reset45()">Reset</button>
+    <!-- Painel de 45 Minutos -->
+    <div class="painel" id="painel2">
+      <h2>Relógio de 45 Minutos</h2>
+      <label>Horas</label>
+      <div class="input-group">
+        <button onclick="adjust('h45', -1)">−</button>
+        <input type="number" id="h45" min="0" value="0" />
+        <button onclick="adjust('h45', 1)">+</button>
+      </div>
+      <label>Minutos</label>
+      <div class="input-group">
+        <button onclick="adjust('m45', -1)">−</button>
+        <input type="number" id="m45" min="0" value="45" />
+        <button onclick="adjust('m45', 1)">+</button>
+      </div>
+      <label>Segundos</label>
+      <div class="input-group">
+        <button onclick="adjust('s45', -1)">−</button>
+        <input type="number" id="s45" min="0" value="0" />
+        <button onclick="adjust('s45', 1)">+</button>
+      </div>
+      <label>Fonte</label>
+      <select id="font45">
+        <option value="Orbitron">Orbitron</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+      </select>
+      <label>Frase</label>
+      <input type="text" id="label45" placeholder="Ex: INTERVALO" />
+      <div class="btn-row">
+        <button onclick="enviar45()">Enviar</button>
+        <button onclick="start45()">Play</button>
+        <button onclick="pause45()">Pause</button>
+        <button onclick="reset45()">Reset</button>
+      </div>
     </div>
   </div>
 
@@ -244,6 +273,15 @@
 
     function pause45() {
       ch45.postMessage({ command: "pause" });
+    }
+
+    function mostrarPainel(num) {
+      document.querySelectorAll('.painel').forEach((el, idx) => {
+        el.classList.toggle('active', idx === num - 1);
+      });
+      document.querySelectorAll('.toggle-button').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === num - 1);
+      });
     }
   </script>
 </body>
