@@ -2,10 +2,10 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Painel de Controle</title>
+  <title>Painel de Controle Duplo</title>
   <style>
     body {
-      background-color: #1c1132;
+      background-color: #151021;
       color: #ccc;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
@@ -14,11 +14,11 @@
     }
 
     .painel {
-      background: #201436;
+      background: #1c152b;
       border-radius: 12px;
       padding: 20px;
       width: 260px;
-      box-shadow: 0 0 10px #00000050;
+      box-shadow: 0 0 8px #00000040;
     }
 
     h2 {
@@ -30,47 +30,75 @@
 
     label {
       display: block;
-      margin: 15px 0 5px;
+      margin: 10px 0 5px;
       font-size: 14px;
     }
 
-    input[type="number"],
-    input[type="text"],
-    select {
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .input-group input {
+      width: 50px;
+      text-align: center;
+      font-size: 16px;
+      background: #261d3f;
+      border: 1px solid #3e2f65;
+      color: white;
+      border-radius: 8px;
+      padding: 5px;
+    }
+
+    .input-group button {
+      background-color: #3a235e;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    select, input[type="text"] {
       width: 100%;
       padding: 8px;
       font-size: 14px;
       border-radius: 8px;
       border: none;
-      background-color: #2a1b4a;
+      background-color: #2d1f49;
       color: #eee;
-    }
-
-    input[type="text"]::placeholder {
-      color: #777;
-    }
-
-    button {
-      padding: 8px 16px;
-      margin-top: 12px;
-      font-size: 14px;
-      border: 1px solid #7e5bef;
-      border-radius: 20px;
-      background-color: transparent;
-      color: #ccc;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background-color: #7e5bef33;
+      margin-top: 5px;
     }
 
     .btn-row {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
       justify-content: center;
+      margin-top: 10px;
+    }
+
+    .btn-row button {
+      padding: 6px 16px;
+      font-size: 14px;
+      border: 1px solid #aaa;
+      background-color: transparent;
+      color: #ccc;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .btn-row button:hover {
+      background-color: #333;
+    }
+
+    .unit {
+      font-size: 12px;
+      color: #888;
+      margin-left: 4px;
     }
   </style>
 </head>
@@ -78,12 +106,27 @@
   <!-- Painel de 5 Minutos -->
   <div class="painel">
     <h2>Relógio de 5 Minutos</h2>
+
     <label>Horas</label>
-    <input type="number" id="h5" min="0" value="0" />
+    <div class="input-group">
+      <button onclick="adjust('h5', -1)">−</button>
+      <input type="number" id="h5" min="0" value="0" />
+      <button onclick="adjust('h5', 1)">+</button>
+    </div>
+
     <label>Minutos</label>
-    <input type="number" id="m5" min="0" value="5" />
+    <div class="input-group">
+      <button onclick="adjust('m5', -1)">−</button>
+      <input type="number" id="m5" min="0" value="5" />
+      <button onclick="adjust('m5', 1)">+</button>
+    </div>
+
     <label>Segundos</label>
-    <input type="number" id="s5" min="0" value="0" />
+    <div class="input-group">
+      <button onclick="adjust('s5', -1)">−</button>
+      <input type="number" id="s5" min="0" value="0" />
+      <button onclick="adjust('s5', 1)">+</button>
+    </div>
 
     <label>Fonte</label>
     <select id="font5">
@@ -106,12 +149,27 @@
   <!-- Painel de 45 Minutos -->
   <div class="painel">
     <h2>Relógio de 45 Minutos</h2>
+
     <label>Horas</label>
-    <input type="number" id="h45" min="0" value="0" />
+    <div class="input-group">
+      <button onclick="adjust('h45', -1)">−</button>
+      <input type="number" id="h45" min="0" value="0" />
+      <button onclick="adjust('h45', 1)">+</button>
+    </div>
+
     <label>Minutos</label>
-    <input type="number" id="m45" min="0" value="45" />
+    <div class="input-group">
+      <button onclick="adjust('m45', -1)">−</button>
+      <input type="number" id="m45" min="0" value="45" />
+      <button onclick="adjust('m45', 1)">+</button>
+    </div>
+
     <label>Segundos</label>
-    <input type="number" id="s45" min="0" value="0" />
+    <div class="input-group">
+      <button onclick="adjust('s45', -1)">−</button>
+      <input type="number" id="s45" min="0" value="0" />
+      <button onclick="adjust('s45', 1)">+</button>
+    </div>
 
     <label>Fonte</label>
     <select id="font45">
@@ -135,6 +193,30 @@
     const ch5 = new BroadcastChannel("timer-5min");
     const ch45 = new BroadcastChannel("timer-45min");
 
+    function adjust(id, delta) {
+      const el = document.getElementById(id);
+      let val = parseInt(el.value) || 0;
+      val = Math.max(0, val + delta);
+      el.value = val;
+    }
+
+    function getTotalSeconds(h, m, s) {
+      return h * 3600 + m * 60 + s;
+    }
+
+    function enviar5() {
+      ch5.postMessage({ command: "font", value: document.getElementById("font5").value });
+      ch5.postMessage({ command: "label", value: document.getElementById("label5").value });
+      reset5();
+    }
+
+    function reset5() {
+      const h = +document.getElementById("h5").value;
+      const m = +document.getElementById("m5").value;
+      const s = +document.getElementById("s5").value;
+      ch5.postMessage({ command: "reset", value: getTotalSeconds(h, m, s) });
+    }
+
     function start5() {
       ch5.postMessage({ command: "start" });
     }
@@ -143,20 +225,17 @@
       ch5.postMessage({ command: "pause" });
     }
 
-    function reset5() {
-      const h = parseInt(document.getElementById("h5").value) || 0;
-      const m = parseInt(document.getElementById("m5").value) || 0;
-      const s = parseInt(document.getElementById("s5").value) || 0;
-      const total = h * 3600 + m * 60 + s;
-      ch5.postMessage({ command: "reset", value: total });
+    function enviar45() {
+      ch45.postMessage({ command: "font", value: document.getElementById("font45").value });
+      ch45.postMessage({ command: "label", value: document.getElementById("label45").value });
+      reset45();
     }
 
-    function enviar5() {
-      const font = document.getElementById("font5").value;
-      const label = document.getElementById("label5").value;
-      ch5.postMessage({ command: "font", value: font });
-      ch5.postMessage({ command: "label", value: label });
-      reset5();
+    function reset45() {
+      const h = +document.getElementById("h45").value;
+      const m = +document.getElementById("m45").value;
+      const s = +document.getElementById("s45").value;
+      ch45.postMessage({ command: "reset", value: getTotalSeconds(h, m, s) });
     }
 
     function start45() {
@@ -165,22 +244,6 @@
 
     function pause45() {
       ch45.postMessage({ command: "pause" });
-    }
-
-    function reset45() {
-      const h = parseInt(document.getElementById("h45").value) || 0;
-      const m = parseInt(document.getElementById("m45").value) || 0;
-      const s = parseInt(document.getElementById("s45").value) || 0;
-      const total = h * 3600 + m * 60 + s;
-      ch45.postMessage({ command: "reset", value: total });
-    }
-
-    function enviar45() {
-      const font = document.getElementById("font45").value;
-      const label = document.getElementById("label45").value;
-      ch45.postMessage({ command: "font", value: font });
-      ch45.postMessage({ command: "label", value: label });
-      reset45();
     }
   </script>
 </body>
