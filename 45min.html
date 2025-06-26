@@ -6,7 +6,7 @@
   <title>Relógio 5 Min</title>
 
   <!-- Fonte inicial -->
-  <link id="fontLink" href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <link id="fontLink" href="<https://fonts.googleapis.com/css2?family=Orbitron&display=swap>" rel="stylesheet">
 
   <style>
     :root {
@@ -36,7 +36,7 @@
   <div id="timer">05:00</div>
 
   <script>
-    let duration = 2700;
+    let duration = 2700; // 45 minutos
     let remaining = duration;
     let interval;
     let paused = false;
@@ -77,6 +77,7 @@
       clearInterval(interval);
       duration = newDuration;
       remaining = duration;
+      paused = false;
       updateDisplay();
     }
 
@@ -84,8 +85,7 @@
       paused = !paused;
     }
 
-    // ✅ Canal correto para esse relógio:
-    const channel = new BroadcastChannel('timer-45min');
+    const channel = new BroadcastChannel('timer-5min');
 
     channel.onmessage = (event) => {
       const { command, value } = event.data;
