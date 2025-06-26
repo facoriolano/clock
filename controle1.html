@@ -119,6 +119,7 @@
     };
 
     let isRunning = false;
+    let wasNeverStarted = true;
 
     function updateUI() {
       for (const unit in values) {
@@ -139,7 +140,10 @@
     function togglePlay() {
       const btn = document.getElementById('playBtn');
       if (!isRunning) {
-        channel.postMessage({ command: 'reset', value: getTotalSeconds() });
+        if (wasNeverStarted) {
+          channel.postMessage({ command: 'reset', value: getTotalSeconds() });
+          wasNeverStarted = false;
+        }
         channel.postMessage({ command: 'start' });
         btn.textContent = 'Pausar';
         isRunning = true;
@@ -155,6 +159,7 @@
       const btn = document.getElementById('playBtn');
       btn.textContent = 'Play';
       isRunning = false;
+      wasNeverStarted = true;
     }
 
     function changeFont() {
