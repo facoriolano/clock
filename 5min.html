@@ -59,7 +59,7 @@
   <div class="circle-container">
     <div class="circle" id="progressCircle"></div>
     <div class="inner">
-      <div class="label">POMODORO</div>
+      <div class="label" id="labelText">POMODORO</div>
       <div class="time" id="timeDisplay">5:00</div>
     </div>
   </div>
@@ -71,6 +71,7 @@
 
     const timeDisplay = document.getElementById("timeDisplay");
     const progressCircle = document.getElementById("progressCircle");
+    const labelText = document.getElementById("labelText");
     const channel = new BroadcastChannel("timer-5min");
 
     function updateDisplay() {
@@ -111,6 +112,10 @@
       document.body.style.fontFamily = `'${fontName}', sans-serif`;
     }
 
+    function changeLabel(text) {
+      labelText.textContent = text || '';
+    }
+
     // Listen to control panel messages
     channel.onmessage = (event) => {
       const { command, value } = event.data;
@@ -118,6 +123,7 @@
       if (command === "pause") pauseTimer();
       if (command === "reset") resetTimer(value);
       if (command === "font") changeFont(value);
+      if (command === "label") changeLabel(value);
     };
 
     // Initial display
